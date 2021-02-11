@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import service.AccountService;
+import service.User;
 
 /**
  *
@@ -48,13 +49,38 @@ public class LoginServlet extends HttpServlet {
            String password=request.getParameter("password");
            String message=request.getParameter("message");
            AccountService as=new AccountService(username,password);
+             if(session.getAttribute("username") != null)
+        {
+             getServletContext().getRequestDispatcher("/WEB-INF/home.jsp")
+            .forward(request,response);
+            return;
+        }
            if(password != null && username != null)
            {
-               
+               User user=as.login();
+               if(user == null)
+               {
+                   request.setAttribute("username", username);
+                   request.setAttribute("password",password);
+                   request.setAttribute("message", "either the username or password is invalid!");
+                    getServletContext().getRequestDispatcher("/WEB-INF/login.jsp")
+                 .forward(request,response);
+                    return;
+               }
+               else
+               {
+                   session.setAttribute("username", username);
+                   session.setAttribute("password",password);
+                   response.sendRedirect("/WEB-INF/home.jsp");
+                   return;
+               }
            }
            else
            {
-           
+               request.setAttribute("message", "either the username or password is null");
+               getServletContext().getRequestDispatcher("/WEB-INF/login.jsp")
+            .forward(request,response);
+               return;
            }
     }
 

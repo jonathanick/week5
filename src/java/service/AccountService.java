@@ -17,7 +17,7 @@ public class AccountService {
         this.username = username;
         this.password = password;
     }
-    public User login(String username, String password)
+    public User login()
     {
        User user=new User(username,password);
        if(password.equals("password")&&(username.equals("abe")|| username.equals("barb")))
